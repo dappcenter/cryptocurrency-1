@@ -1,14 +1,45 @@
-go to where you placed your coin
-ex: cd Desktop/wildcoin
-and run the ff commands to change the ports
-find . -type f -print0 | xargs -0 sed -i 's/9333/2333/g'
-find . -type f -print0 | xargs -0 sed -i 's/9332/2332/g'
+Network Parameter:
+*replace yourport with your custom port
+then use the terminal navigate to you coin directory 
+ then copy the 2 find statement to your terminal and hit enter
+                                         's/litecoinPORT/yourcoinPOrt/g'
+1.find . -type f -print0 | xargs -0 sed -i 's/9333/2333/g'
+2.find . -type f -print0 | xargs -0 sed -i 's/9332/2332/g'
 
-// we need this commands for us to generate keys
 
+*replace our public key address
+go to your coin folder> src and look for base58.h open to text editor gotoline 275 hit enter
+look for PUBKEY_ADDRESS and PUBKEY_ADDRESS_TEST
+and change their values with The First letter of your custom coin for example "wildcoin" so look for W=value and the w=value
+in this reference('https://en.bitcoin.it/wiki/List_of_address_prefixes')and save the changes
+*then we need to the DEsktop directory
+and paste this commands to generate  keys
+----------------------------------------------------------
 openssl ecparam -genkey -name secp256k1 -out alertkey.pem
 openssl ec -in alertkey.pem -text > alertkey.hex
 openssl ecparam -genkey -name secp256k1 -out testnetalert.pem
 openssl ec -in testnetalert.pem -text > testnetalert.hex
 openssl ecparam -genkey -name secp256k1 -out genesiscoinbase.pem
 openssl ec -in testnetalert.pem -text > genesiscoinbase.hex
+--------------------------------------------------------------
+*t0 generate a key $cat alertkey.hex hit enter this command will generate private and a public key
+only use the public key hex copy the public key value and remove all the : 
+*go inside of your coin folder>src search for alert.cpp
+replace the pszMainKey value with the generated public key without the semicolons.
+*generate key ($cat Testnetalert.hex) for the pszTestKey then replace it in the alert.cpp
+*save the alert.cpp
+- coin>src>main.cpp>gotoline 2794 we need to replace the ParseHex value
+-Desktop terminal $cat genesiscoinbase.hex this will generate public and private key use the public key and edit to remove the semicolons
+then paste it in the parseHex value then hit save
+-change the values inside the if(fTestNet){ 
+pchMessageStart[0]=0xfc, 
+pchMessageStart[1]=0xc1,
+pchMessageStart[2]=0xb4,
+pchMessageStart[3]=0xdc
+}only change the last character
+unsigned char pchMessagestart[4]{same change the last character of the 4 param}save
+coin>src>net.cpp>line 1178
+MainNetDnsSeed[][2]={delete all seed exept for null}
+same with the TestNet DnsSeed[][2]={delete all except null}
+-scroll down to  unsigned int pnSeed[]={delete all and just type "0x0"} save
+-compile:goto terminal cdto Desktop>coin>src$ make -f makefile.unix enter
