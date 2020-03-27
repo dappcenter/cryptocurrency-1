@@ -1,0 +1,116 @@
+Wallet Interface
+-goto your coin folder>src search main.cpp line 1090
+GetBlockValue change 50 to 25
+nsubsidy = nHeight/420000
+//only change the first digits of timespan and spacing
+targetTimeSpan= 3.5 * 24 * 60 * 60//every 3.5 days readjust difficulty
+targetSpacing=2.5 * 60// it should take 2.5 minutes to mine the coin
+save
+search main.h
+scroll to find the MONEY_MAX=84000000 with MONEY_MAX=42000000
+and COINBASE_MATURITY=100 to COINBASE_MATURITY=10 ( higher for security )
+-goto line 627
+to change the dPriority>COIN * 576/250
+targetspantime 3day
+1440min/day x3days=4320/2timespacing =2160
+-goto main.cpp line 2794
+txNew.vout[0].nValue=50* COIN change the 50 to 25
+nTime=terminal $date +%s enter get the current epictime then replace the Testnet
+then do it again then replace the mainTime
+pszTimestamp = "1/14/2020 message"
+save
+-hash.Block.merkleroot{delete everything except 0x} save
+terminal cd desktop>coin>src$ make -f makefile.unix compile
+-after compiling generate merkleroot
+-terminal> desktop>coin>src$ ./wildcoind enter we need the aborted(core dumped)output
+-filedirectory> Home> hit ctrl +h to show hiddenfiles goto the ".wildcoin folder"open the debug.log and at the end of the file
+you can see the last string copy the string
+goto main.cpp where your merkleroot is located and paste the string
+save
+-in your main.cpp
+under the if(fTestNet){}
+-------------------------------------------------copy and paste this code and change the false to true
+if (false && block.GetHash() != hashGenesisBlock)
+        {
+            printf("Searching for genesis block...\n");
+            // This will figure out a valid hash and Nonce if you're
+            // creating a different genesis block:
+            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
+            uint256 thash;
+            char scratchpad[SCRYPT_SCRATCHPAD_SIZE];
+ 
+            loop
+            {
+#if defined(USE_SSE2)
+                // Detection would work, but in cases where we KNOW it always has SSE2,
+                // it is faster to use directly than to use a function pointer or conditional.
+#if defined(_M_X64) || defined(__x86_64__) || defined(_M_AMD64) || (defined(MAC_OSX) && defined(__i386__))
+                // Always SSE2: x86_64 or Intel MacOS X
+                scrypt_1024_1_1_256_sp_sse2(BEGIN(block.nVersion), BEGIN(thash), scratchpad);
+#else
+                // Detect SSE2: 32bit x86 Linux or Windows
+                scrypt_1024_1_1_256_sp(BEGIN(block.nVersion), BEGIN(thash), scratchpad);
+#endif
+#else
+                // Generic scrypt
+                scrypt_1024_1_1_256_sp_generic(BEGIN(block.nVersion), BEGIN(thash), scratchpad);
+#endif
+                if (thash <= hashTarget)
+                    break;
+                if ((block.nNonce & 0xFFF) == 0)
+                {
+                    printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
+                }
+                ++block.nNonce;
+                if (block.nNonce == 0)
+                {
+                    printf("NONCE WRAPPED, incrementing time\n");
+                    ++block.nTime;
+                }
+            }
+            printf("block.nTime = %u \n", block.nTime);
+            printf("block.nNonce = %u \n", block.nNonce);
+            printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
+        }
+---------------------------------------------------------------------------------------------------------------
+-main.cpp
+bool LoadBlockIndex(){
+     if(statement TestNet){
+      hashGenesisBlock =vint256("0x");
+}
+}
+do the same with the main hashGenesisBlock on tol of main.cpp
+delete except (0x);
+save
+goto terminal desktop>coin>src$ make -f makefile.unix compile
+src$ ./wildcoind -testnet
+aborted (core dump) ok
+go to file .wildcoin folder>testnet open debug.log copy nNonce value(Nonce test) and getHash value(hashgenesisblock)
+save
+goto desktop>coin>src$compile
+after compiling
+src$ ./wildcoind
+aborted(core dump)
+go to file .wildcoin folder> debug.log copy nNonce value(Nonce main above the if testnet) and getHash value( top hashgenesisblock)
+save
+coin>src search checkpoint.cpp
+map_list_of={delete except for the 1500,vint256()}change 1500 to 0 and the vint("0x( get hashgenesisblock)")
+map_checkpoints get nTime in main.cpp, 
+0 total no transaction , 
+20 estimated number of transaction
+do the same with the test_map
+map_list_of={delete except for the 1500,vint256()}change 1500 to 0 and the vint("0x( get hashgenesisblock)")
+map_checkpoints get nTime in main.cpp, 
+0 total no transaction , 
+20 estimated number of transaction
+do the same with the test_map
+save
+terminal cd desktop>coin$ qmake enter 
+terminal cd desktop>coin$ make this will compile all
+after then ls
+
+coin$ ./wildcoin-qt
+
+
+
+
