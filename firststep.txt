@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <p>
-        UBUNTU DEPENDENCIES:
+UBUNTU DEPENDENCIES:
 
 sudo apt-get update
 
@@ -43,7 +34,7 @@ sudo apt-get install openssl1.0
 
 sudo apt-get install libssl1.0-dev
 
-=======================================================================/install all DEPENDENCIES/===============
+============================================/end of ubuntu DEPENDENCIES/================================
 
 git clone -b 0.8 https://github.com/litecoin-project/litecoin.git
 
@@ -52,6 +43,3 @@ find . -type f -print0 | xargs -0 sed -i 's/Litecoin/Technocoin/g'
 find . -type f -print0 | xargs -0 sed -i 's/LiteCoin/TechnoCoin/g'
 find . -type f -print0 | xargs -0 sed -i 's/LITECOIN/TECHNOCOIN/g'
 find . -type f -print0 | xargs -0 sed -i 's/LTC/VISION/g'
-    </p>
-</body>
-</html>
